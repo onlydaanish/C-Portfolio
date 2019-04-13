@@ -1,0 +1,20 @@
+﻿Build started 3/7/2015 11:20:05 PM.
+     1>Project "F:\D.B\C++ Programming\Change Function in a DLL\testdll\testdll.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /AI"C:\Program Files\Windows Kits\8.1\References\CommonConfiguration\Neutral" /Zi /clr /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D TESTDLL_EXPORTS /D _WINDLL /D _MBCS /Gm- /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\mscorlib.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib main.cpp
+         main.cpp
+     1>main.cpp(56): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files\Microsoft Visual Studio 12.0\VC\include\stdlib.h(528) : see declaration of 'mbstowcs'
+     1>main.cpp(71): warning C4996: 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files\Microsoft Visual Studio 12.0\VC\include\stdlib.h(575) : see declaration of 'wcstombs'
+     1>main.cpp(88): warning C4101: 'NewSize' : unreferenced local variable
+     1>f:\d.b\c++ programming\change function in a dll\testdll\main.cpp(94): warning C4700: uninitialized local variable 'LoadedImage' used
+       Link:
+         C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\D.B\C++ Programming\Change Function in a DLL\Debug\testdll.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\D.B\C++ Programming\Change Function in a DLL\Debug\testdll.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\D.B\C++ Programming\Change Function in a DLL\Debug\testdll.lib" /MACHINE:X86 /DLL Debug\main.obj
+            Creating library F:\D.B\C++ Programming\Change Function in a DLL\Debug\testdll.lib and object F:\D.B\C++ Programming\Change Function in a DLL\Debug\testdll.exp
+         testdll.vcxproj -> F:\D.B\C++ Programming\Change Function in a DLL\Debug\testdll.dll
+     1>Done Building Project "F:\D.B\C++ Programming\Change Function in a DLL\testdll\testdll.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:08.56

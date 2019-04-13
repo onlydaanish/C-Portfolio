@@ -1,0 +1,6 @@
+C:\Users\Daanish\Desktop\directdrawoverlaylib-711\ManagedOverlaySample\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Daanish\Desktop\directdrawoverlaylib-711\ManagedOverlaySample\obj\Debug\GenerateResource-ResGen.read.1.tlog
+C:\Users\Daanish\Desktop\directdrawoverlaylib-711\ManagedOverlaySample\obj\Debug\GenerateResource-ResGen.write.1.tlog
+D:\Daanish Stuff\directdrawoverlaylib-711\ManagedOverlaySample\obj\Debug\ResolveAssemblyReference.cache
+D:\Daanish Stuff\directdrawoverlaylib-711\ManagedOverlaySample\obj\Debug\GenerateResource-ResGen.read.1.tlog
+D:\Daanish Stuff\directdrawoverlaylib-711\ManagedOverlaySample\obj\Debug\GenerateResource-ResGen.write.1.tlog

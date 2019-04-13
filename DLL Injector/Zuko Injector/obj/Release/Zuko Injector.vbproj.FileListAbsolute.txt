@@ -1,0 +1,10 @@
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\bin\Release\Zuko Injector.exe
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\bin\Release\Zuko Injector.pdb
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\bin\Release\Zuko Injector.xml
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\obj\Release\Zuko_Injector.Form1.resources
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\obj\Release\Zuko_Injector.Resources.resources
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\obj\Release\Zuko Injector.vbproj.GenerateResource.Cache
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\obj\Release\Zuko Injector.exe
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\obj\Release\Zuko Injector.xml
+C:\Users\Daanish\Desktop\C++ Programming\Zuko Injector\Zuko Injector\obj\Release\Zuko Injector.pdb
