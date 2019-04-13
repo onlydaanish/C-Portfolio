@@ -1,0 +1,344 @@
+#include "Global.h"
+#include "Functions.h"
+#include "Assembly.h"
+#include "MobStruct.h"
+//***************************************************//
+//					  Hooks							//
+//**************************************************//
+typedef void (__fastcall* CUIStatusBar_SetNumberValue_Def)(LPVOID, LPVOID, int, int, int, int, int, int, int);
+void (__fastcall* CUIStatusBar__SetNumberValue)(LPVOID lpvClass, LPVOID lpvEDX, int iHp, int iMaxHp, int iMp, int iMaxMp, int iExp, int iMaxExp, int iTempExp);
+//#define _TEST_WINDOW
+
+void __stdcall UpdateMobStruct()
+{
+	// Update Addys for Mob Struct
+	MobStruct::Base = Search(_MobBase, MobStruct::AOB::Base, MobStruct::Mask::Base, 2, true);
+	MobStruct::Offset::Main = Search(_Mob1Offset, MobStruct::AOB::Main, MobStruct::Mask::Main, 2, true);
+	MobStruct::Offset::Next = Search(_Mob2Offset, MobStruct::AOB::Next, MobStruct::Mask::Next, 2, true);
+	MobStruct::Offset::Second = Search(_Mob3Offset, MobStruct::AOB::Second, MobStruct::Mask::Second, 2, true);
+	//MobStruct::Offset::Third = *(BYTE*)Search(_Mob4Offset, MobStruct::AOB::Third, MobStruct::Mask::Third, 2, false);
+	MobStruct::Offset::X = Search(_MobX, MobStruct::AOB::X, MobStruct::Mask::X, 2, true);
+	MobStruct::Offset::Death = Search(_MobDeath, MobStruct::AOB::Death, MobStruct::Mask::Death, 2, true);
+
+	if (MobStruct::Offset::X != Bad)
+		MobStruct::Offset::Y = MobStruct::Offset::X + 4;
+
+	Mob_Info.MobCountThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)GetMobCount, 0, 0, NULL);
+	//Mob_Info.MobAddyThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)GetMobAddys, 0, 0, NULL);
+	//Mob_Info.MobPoolThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)GetMobPool, 0, 0, NULL);
+	//Mob_Info.OddThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MobPoolOdd, 0, 0, NULL);
+	//Mob_Info.EvenThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MobPoolEven, 0, 0, NULL);
+
+	if (Mob_Info.MobAddyThread != NULL && Mob_Info.MobCountThread != NULL && Mob_Info.MobPoolThread != NULL && MobStruct::Offset::Second != Bad)
+	{
+#ifdef _TEST_WINDOW
+		AllocConsole();
+		AttachConsole(GetCurrentProcessId());
+		freopen("CON", "w", stdout);
+#endif
+	}
+	else
+	{
+		Msg(_MobError);
+	}
+}
+
+void __stdcall GetMobAddys()
+{
+	DWORD dwSecond, dwMob;
+	for (;;)
+	{
+		for (int mobNext = 1; mobNext <= Mobs; mobNext++)
+		{
+			if (mobNext == 1)
+			{
+				dwMob = GetPointedAddress((ULONG_PTR*)MobStruct::Base, MobStruct::Offset::Main);
+				dwMob = GetPointedAddress((ULONG_PTR*)dwMob, MobStruct::Offset::Next);
+				dwMob = GetPointedAddress((ULONG_PTR*)dwMob, MobStruct::Offset::Second);
+				dwMob = GetPointedAddress((ULONG_PTR*)dwMob, MobStruct::Offset::Third);
+
+				MobStruct::XAddy[mobNext] = GetPointedAddress((ULONG_PTR*)dwMob, MobStruct::Offset::X);
+				MobStruct::YAddy[mobNext] = GetPointedAddress((ULONG_PTR*)dwMob, MobStruct::Offset::Y);
+				MobStruct::DeathAddy[mobNext] = GetPointedAddress((ULONG_PTR*)dwMob, MobStruct::Offset::Death);
+			}
+			else
+			{
+				dwMob = GetPointedAddress((ULONG_PTR*)GetPointedAddress((ULONG_PTR*)MobStruct::Base, MobStruct::Offset::Main), -12);
+				for (int i = 1; i < mobNext; i++)
+				{
+					dwMob = GetPointedAddress((ULONG_PTR*)dwMob, MobStruct::Offset::Next);
+					dwSecond = GetPointedAddress((ULONG_PTR*)dwMob, 0x14);
+					dwSecond = GetPointedAddress((ULONG_PTR*)dwSecond, MobStruct::Offset::Second);
+					dwSecond = GetPointedAddress((ULONG_PTR*)dwSecond, MobStruct::Offset::Third);
+
+					MobStruct::XAddy[mobNext] = GetPointedAddress((ULONG_PTR*)dwSecond, MobStruct::Offset::X);
+					MobStruct::YAddy[mobNext] = GetPointedAddress((ULONG_PTR*)dwSecond, MobStruct::Offset::Y);
+					MobStruct::DeathAddy[mobNext] = GetPointedAddress((ULONG_PTR*)dwSecond, MobStruct::Offset::Death);
+				}
+			}
+			Sleep(10);
+		}
+		Sleep(10);
+	}
+}
+
+void __stdcall GetMobCount()
+{
+	for (;;)
+	{
+		if (MobStruct::Base != Bad)
+		{
+			if (MobStruct::Offset::Count != Bad)
+			{
+				Mobs = ReadPointer((ULONG_PTR*)MobStruct::Base, MobStruct::Offset::Count);
+				if (Mobs != 0)
+					Mobs -= 1;
+				WritePrivateProfileString("Mob", "Count", sToLPCSTR(Mobs.ToString()), CurrentDir);
+			}
+
+			//Get Maximum Number of Mobs in a Map throughout current session of game
+			Mob_Info.MaxMobs = (Mobs > Mob_Info.MaxMobs ? Mobs : Mob_Info.MaxMobs);
+		}
+		Sleep(10);
+	}
+}
+
+void __stdcall MobPoolOdd()
+{
+	for (;;)
+	{
+		for (int i = 1; i <= Mobs; i=+2)
+		{
+			MobPool[i].GetMobChoords(i);
+		}
+		Sleep(10);
+	}
+}
+
+void __stdcall MobPoolEven()
+{
+	for (;;)
+	{
+		for (int i = 2; i <= Mobs; i+=2)
+		{
+			MobPool[i].GetMobChoords(i);
+		}
+		Sleep(10);
+	}
+}
+
+void __stdcall GetMobPool()
+{
+	for (;;)
+	{
+		if (Mobs > 0)
+		{
+			if (MobPool.size() != Mobs)
+				MobPool.resize(Mobs);
+
+			#ifdef _TEST_WINDOW
+				printf(sToLPCSTR("Mob " + i + " XY: " + MobPool[i].ReturnX().ToString() + "," + MobPool[i].ReturnY().ToString() + "\n"));
+				Sleep(10);		
+			#endif
+		}
+		Sleep(10);
+	}
+}
+
+/*
+CheckMobValues
+- Unused
+*/
+/*bool __stdcall CheckMobValues()
+{
+for (int i = 1; i <= Mobs; i++)
+{
+if (Mob[i].ReturnX() != 0 && Mob[i].ReturnY() != 0)
+continue;
+else
+return false;
+}
+return true;
+}*/
+
+
+
+bool GetClean()
+{
+	static unsigned long ReadWrite = PAGE_EXECUTE_READWRITE, Old = NULL, dOld = NULL;
+	
+	if (Pic::Addyf != Bad)
+		memcpy(Pic::Disablef, (void*)Pic::Addyf, sizeof(Pic::Disablef));
+
+	if (Kami::Addy != Bad)
+		memcpy(Kami::CleanKami, (void*)Kami::Addy, sizeof(Kami::CleanKami));
+
+	if (ItemFilter::Addy != Bad)
+		memcpy(ItemFilter::CleanFilter, (void*)ItemFilter::Addy, sizeof(ItemFilter::CleanFilter));
+	
+	Msg(_UpdateAddys);
+	return true;
+}
+
+void UpdateLogo()
+{
+	//Logo Skip
+	LogoSkip::Addy = Search(_LogoSkip, LogoSkip::AOB, LogoSkip::Mask, 0, false);
+}
+
+void UpdateHacks()
+{
+	//***************************************************//
+	//						Hacks						//
+	//**************************************************//
+
+	//PIC
+	Pic::Addyf = Search(_PIC, Pic::AOBf, Pic::Mask, 0, false);
+	Pic::Addyfs = Search(_PIC, Pic::AOBfx, Pic::Maskfs, 0, false);
+	Pic::Addys = Search(_PIC, Pic::AOBs, Pic::Masks, 0, false);
+
+	//Kami
+	Kami::Addy = Search(_Kami, Kami::AddyAOB, Kami::addyMask, 0, false);
+	Kami::TeleAddy = Search(_Tele, Kami::TeleAddyAob, Kami::TeleMask, 0, false);
+
+	//Item Filter
+	ItemFilter::Addy = Search(_Filter, ItemFilter::FilterAOB, ItemFilter::FilterMask, 0, false);
+	if (ItemFilter::Addy != Bad)
+	ItemFilter::FilterReturn = ItemFilter::Addy + 5;
+
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&GetClean, 0, 0, NULL);
+}
+
+
+
+void __fastcall Hook_CLI_SetNumberValue(LPVOID lpvClass, LPVOID lpvEDX, int iHp, int iMaxHp, int iMp, int iMaxMp, int iExp, int iMaxExp, int iTempExp)
+{
+	if(iHp && iMaxHp)
+	{
+		HP = iHp;
+		WritePrivateProfileString("Char", "Hp", sToLPCSTR(HP.ToString()), CurrentDir);
+		MaxHP = iMaxHp;
+	}
+	
+	if(iMp && iMaxMp)
+	{
+		MP = iMp;
+		WritePrivateProfileString("Char", "Mp", sToLPCSTR(MP.ToString()), CurrentDir);
+		MaxMP = iMaxMp;
+		WritePrivateProfileString("Char", "MaxMp", sToLPCSTR(MaxMP.ToString()), CurrentDir);
+	}
+	
+	if(iExp && iMaxExp)
+	{
+		EXP = iExp;
+		WritePrivateProfileString("Char", "Exp", sToLPCSTR(EXP.ToString()), CurrentDir);
+	}
+	
+	return CUIStatusBar__SetNumberValue(lpvClass, lpvEDX, iHp, iMaxHp, iMp, iMaxMp, iExp, iMaxExp, iTempExp);
+
+}
+
+
+void KamiVac()
+{
+	Teleport(100, 100);
+}
+
+void TestThread()
+{
+	ItemFilter::Addy = Search(_Filter, ItemFilter::FilterAOB, ItemFilter::FilterMask, 0, false);
+	if (ItemFilter::Addy != Bad)
+		ItemFilter::FilterReturn = ItemFilter::Addy + 5;
+
+	tFilter();
+}
+
+HANDLE KamiThread;
+void tKami()
+{
+	if (!Kami::Status)
+	{
+		KamiThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&KamiVac, 0, 0, NULL);
+		KamiStatus = true;
+	}
+	else
+	{
+		TerminateThread(KamiThread, 0);
+		KamiStatus = false;
+	}
+}
+
+
+bool tPIC()
+{
+	if (Pic::Addyf != Bad && Pic::Addyfs != Bad && Pic::Addys != Bad)
+	{
+		if (!Pic::status)
+		{
+			Call(Pic::Addyf, PicASM,5);
+			hToggle(Pic::Addys, Pic::Enables, sizeof(Pic::Enables));
+			Pic::status = true;
+		}
+		else
+		{
+			hToggle(Pic::Addyf, Pic::Disablef, sizeof(Pic::Disablef));
+			hToggle(Pic::Addys, Pic::Disables, sizeof(Pic::Addys));
+			Pic::status = false;
+		}
+	}
+	return true;
+}
+
+bool tGodMode()
+{
+	if (GodMode::Addy != Bad)
+	{
+		if (!GodMode::Status)
+		{
+			Call(GodMode::Addy, IntersectRectASM, 0); 
+			GodModeStatus = true;
+		}
+		else
+		{
+			memcpy((void*)GodMode::Addy, GodMode::Disable, sizeof(GodMode::Disable));
+			GodModeStatus = false;
+		}
+	}
+	return true;
+}
+
+void tFilter()
+{
+	FilterMode = 0;
+	if (ItemFilter::Addy != Bad)
+	{
+		if (!ItemFilter::Status)
+		{
+			Call(ItemFilter::Addy, FilterASM, 0);
+			FilterStatus = true;
+		}
+		else
+		{
+			memcpy((void*)ItemFilter::Addy, ItemFilter::CleanFilter, sizeof(ItemFilter::CleanFilter));
+			FilterStatus = false;
+		}
+	}
+}
+
+void tLogoSkip()
+{
+	if (LogoSkip::Addy != Bad)
+	{
+		if (!LogoSkip::Status)
+		{	
+			hToggle(LogoSkip::Addy, LogoSkip::Enable, sizeof(LogoSkip::Enable));
+			LogoSkip::Status = true;
+		}
+		else
+		{
+			hToggle(LogoSkip::Addy, LogoSkip::Disable, sizeof(LogoSkip::Disable));
+			LogoSkip::Status = false;
+		}
+	}
+}
+

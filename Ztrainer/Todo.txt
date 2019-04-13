@@ -1,0 +1,37 @@
+Notes
+------------------------------------------------
+Design:
+ - .Exe
+	- GUI for toggling hacks, interfacing with user, etc...
+	- Sends "window messages" to given "maplestory" handle to interface/interact with hacks (toggle on/off, etc...).
+		- .exe sends first message telling .dll what handle to interact with. 
+			- .DLL could send messages back to .exe, data interaction (passing values back and forth) would have to ...
+	--------
+	* First Run:
+		- Set default MS path from Registry(HK...)
+		- Check for updates
+		- 
+ - .Dll
+
+
+Overall:
+ - Auto update - When opened, it uses latest version of trainer.
+   - Sheer: I'd like this to be forced, and smooth when launched, as mine did before.
+		- Can't use my current update software cause it requires a lot of manual work for a simple patch, my PVC(Project version control) (the patch management program) isn't complete.
+
+
+Sheer Ice
+-----------------
+ - Create Auto Update methods
+ - HackLib - A library for toggling the hacks. Easier to update, manage, create, etc...
+ - 
+ -- Ideas
+   - DirectX Interface *or* different overlay. (couldn't we overlay a .net interface?)
+
+
+Dark Zuko
+-----------------
+ - Changeme
+
+
+
