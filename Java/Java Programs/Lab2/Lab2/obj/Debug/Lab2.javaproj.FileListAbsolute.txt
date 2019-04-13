@@ -1,0 +1,3 @@
+C:\Users\New\OneDrive\Documents\School\3640\Lab2\Lab2\bin\Debug\Lab2.jar
+C:\Users\New\OneDrive\Documents\School\3640\Lab2\Lab2\obj\Debug\pkg\Class1.class
+C:\Users\New\OneDrive\Documents\School\3640\Lab2\Lab2\obj\Debug\Lab2.jar

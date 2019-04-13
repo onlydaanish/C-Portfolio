@@ -1,0 +1,22 @@
+import java.io.*;
+
+
+public class Test
+	{
+		public static void main(String[] args)
+		{
+		    Console console = System.console();
+		    String firName = console.readLine("Enter Name: ");
+		    while (!validateFirstName(firName))
+		    {
+		        System.out.printf("Not Valid Input");
+                firName = console.readLine("Enter Name: ");   
+		    }
+			Employee Emp1 = new Employee(firName, "Bhamla", 10000);
+			Emp1.GetName(); 
+			System.out.printf("Salary: %.02f\n", Emp1.GetSalary());
+			Emp1.GiveRaise();
+			System.out.printf("After Raise New Salary is: %.02f\n", Emp1.GetSalary());
+		}
+	}
+
